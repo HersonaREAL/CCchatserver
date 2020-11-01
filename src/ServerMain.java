@@ -4,7 +4,7 @@ import java.net.Socket;
 
 public class ServerMain {
     public final static int PORT=23333;
-    private static client_manager manager = new client_manager();
+    private static final client_manager manager = new client_manager();
     public static void main(String[] args) {
         try(ServerSocket server = new ServerSocket(PORT)){
             while (true) {

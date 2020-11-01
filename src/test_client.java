@@ -16,26 +16,16 @@ public class test_client {
             out.flush();
             //out.close();
             int i=0;
-            while (i<100){
+            while (i<10){
                 out.writeUTF("测试聊天"+i);
                 out.flush();
                 i++;
             }
             DataInputStream in =new DataInputStream(socket.getInputStream());
             while(true){
-
-                String message;
-                message = in.readUTF();
+                String message = in.readUTF();
                 System.out.println(message);
             }
-         //   InputStream in = socket.getInputStream();
-//            while (true) {
-//                //out.write("test".getBytes());
-//                if (in.available() > 0) {
-//                    byte[] message = new byte[in.available()];
-//                    in.read(message);
-//                }
-//            }
         } catch (Exception e) {
             e.printStackTrace();
         }finally {

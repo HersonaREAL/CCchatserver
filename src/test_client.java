@@ -7,6 +7,7 @@ public class test_client {
         String hostname = args.length>0?args[0]:"localhost";
         Socket socket = null;
         try {
+            while(true){
             socket = new Socket(hostname,23333);
             //socket.setSoTimeout(15000);
 
@@ -14,18 +15,19 @@ public class test_client {
             DataOutputStream out = new DataOutputStream(socket.getOutputStream());
             out.writeUTF("👴傲天");
             out.flush();
+            }
             //out.close();
-            int i=0;
-            while (i<10){
-                out.writeUTF("测试聊天"+i);
-                out.flush();
-                i++;
-            }
-            DataInputStream in =new DataInputStream(socket.getInputStream());
-            while(true){
-                String message = in.readUTF();
-                System.out.println(message);
-            }
+//            int i=0;
+//            while (i<1000){
+//                out.writeUTF("测试聊天"+i);
+//                out.flush();
+//                i++;
+//            }
+//            DataInputStream in =new DataInputStream(socket.getInputStream());
+//            while(true){
+//                String message = in.readUTF();
+//                System.out.print(message);
+//            }
         } catch (Exception e) {
             e.printStackTrace();
         }finally {

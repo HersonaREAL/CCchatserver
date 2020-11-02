@@ -18,8 +18,10 @@ public class client_process implements Runnable {
     @Override
     public void run() {
         try(DataInputStream in =new DataInputStream(connection.getInputStream())) {
+
             while (true) {
                 //轮询接受信息
+
                 String message = in.readUTF();
                 if(!MyBoss.send_message(process_message(message)))
                     System.err.println(Name+"的信息发送失败！");
@@ -35,9 +37,9 @@ public class client_process implements Runnable {
     String process_message(String message) {
         //给信息拼接上发送人名字和时间,再作发送
         Date t = new Date();
-        SimpleDateFormat df = new SimpleDateFormat(" (yyyy-MM-dd HH:mm:ss)\n·");
+        SimpleDateFormat df = new SimpleDateFormat(" (yyyy-MM-dd HH:mm:ss)\n○ ");
         String Name_Date=Name.concat(df.format(t)); //按格式拼接名字和时间
-        return  Name_Date.concat(message); //拼接信息
+        return  Name_Date.concat(message).concat("\n"); //拼接信息
     }
 
 }

@@ -31,8 +31,8 @@ public class client_manager {
             }
 
             //通知所有客户端有人加入
-            String enter_notice="\t\t有位👴加入群聊 名字:".concat(Getname);
-            System.out.println("\t\t用户 "+Getname+" 已加入,套接字"+connection.getInetAddress()+":"+connection.getPort());
+            String enter_notice="\t\t有位👴加入群聊 名字:".concat(Getname).concat("\n");
+            System.out.println("用户 "+Getname+" 已加入,套接字"+connection.getInetAddress()+":"+connection.getPort());
             if(!send_message(enter_notice))
                 System.err.println("加入通知发送失败");
 
@@ -46,13 +46,14 @@ public class client_manager {
 
     void del_client(Socket connection){
         try {
-        String exit_notice="\t\t有位👴退出群聊 名字:".concat(client_map.get(connection));
+        String exit_name = client_map.get(connection);
+        String exit_notice="\t\t有位👴退出群聊 名字:".concat(exit_name).concat("\n");
         synchronized (this){
             //从哈希表中去除
             client_map.remove(connection);
             client_count--;
         }
-        System.out.println(exit_notice+"套接字 "+connection.getInetAddress()+":"+connection.getPort());
+        System.out.println("用户 "+exit_name+" 已退出,套接字"+connection.getInetAddress()+":"+connection.getPort());
 
         connection.close();//关闭套接字释放资源
 

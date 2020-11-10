@@ -2,7 +2,6 @@ import operation.Message;
 
 import java.io.*;
 import java.net.Socket;
-import java.util.Scanner;
 
 public class test_client {
     public static void main(String[] args) {
@@ -27,6 +26,7 @@ public class test_client {
             }
 
         } catch (Exception e) {
+            System.err.println("EEEEEE");
             e.printStackTrace();
         }finally {
             if(socket!=null){

@@ -6,14 +6,14 @@ import java.util.HashMap;
 import java.util.Queue;
 
 public class Message implements Serializable {
-    private int theType;//æ¶ˆæ¯ç±»å‹: 0ç¾¤å‘ 1ç§èŠ 2åŒæ­¥
+    private int theType;//ÏûÏ¢ÀàĞÍ: 0Èº·¢ 1Ë½ÁÄ 2Í¬²½
 
-    private String theFromUser; //æ¶ˆæ¯ä»å“ªé‡Œæ¥
-    private String theToUser;  //æ¶ˆæ¯åˆ°å“ªé‡Œå»
-    private String theMessage;//æ¶ˆæ¯æœ¬ä½“
+    private String theFromUser; //ÏûÏ¢´ÓÄÄÀïÀ´
+    private String theToUser;  //ÏûÏ¢µ½ÄÄÀïÈ¥
+    private String theMessage;//ÏûÏ¢±¾Ìå
 
-    private Queue<String>  theClientMap;//åŒæ­¥ç»™å®¢æˆ·ç«¯ç”¨çš„
-    private int theClientCount;                 //å®¢æˆ·ç«¯æ•°é‡
+    private Queue<String>  theClientMap;//Í¬²½¸ø¿Í»§¶ËÓÃµÄ
+    private int theClientCount;                 //¿Í»§¶ËÊıÁ¿
 
     public Message() {
         this.theType = -1;
@@ -25,14 +25,14 @@ public class Message implements Serializable {
     }
 
     /**
-     * @return æ¶ˆæ¯ç±»å‹: 0ç¾¤å‘ 1ç§èŠ 3åŒæ­¥
+     * @return ÏûÏ¢ÀàĞÍ: 0Èº·¢ 1Ë½ÁÄ 3Í¬²½
      */
     public int getTheType() {
         return theType;
     }
 
     /**
-     * @return fromUserç”¨æˆ·å
+     * @return fromUserÓÃ»§Ãû
      */
     public String getTheFromUser() {
         return theFromUser;
@@ -43,28 +43,28 @@ public class Message implements Serializable {
     }
 
     /**
-     * @return æ‰€å‘æ¶ˆæ¯
+     * @return Ëù·¢ÏûÏ¢
      */
     public String getTheMessage() {
         return theMessage;
     }
 
     /**
-     * @return æœåŠ¡å™¨çš„ç”¨æˆ·åˆ—è¡¨
+     * @return ·şÎñÆ÷µÄÓÃ»§ÁĞ±í
      */
     public Queue<String> getTheClientMap() {
         return theClientMap;
     }
 
     /**
-     * @return æœåŠ¡å™¨ç”¨æˆ·æ•°
+     * @return ·şÎñÆ÷ÓÃ»§Êı
      */
     public int getTheClientCount() {
         return theClientCount;
     }
 
     /**
-     * @param theMessage ç¾¤å‘æ¶ˆæ¯å†…å®¹
+     * @param theMessage Èº·¢ÏûÏ¢ÄÚÈİ
      */
     public void groupSend(String theMessage, String theFromUser) {
         this.theType = 0;
@@ -77,9 +77,9 @@ public class Message implements Serializable {
     }
 
     /**
-     * @param theMessage  P2Pæ¶ˆæ¯å†…å®¹
-     * @param theFromUser å‘é€æ–¹
-     * @param theToUser   æ¥æ”¶æ–¹
+     * @param theMessage  P2PÏûÏ¢ÄÚÈİ
+     * @param theFromUser ·¢ËÍ·½
+     * @param theToUser   ½ÓÊÕ·½
      */
     public void p2pSend(String theFromUser, String theToUser, String theMessage) {
         this.theType = 1;
@@ -92,9 +92,9 @@ public class Message implements Serializable {
     }
 
     /**
-     * @param theMessage     åŒæ­¥æ¶ˆæ¯å†…å®¹
-     * @param theClientMap   ç”¨æˆ·è¡¨
-     * @param theClientCount ç”¨æˆ·æ•°
+     * @param theMessage     Í¬²½ÏûÏ¢ÄÚÈİ
+     * @param theClientMap   ÓÃ»§±í
+     * @param theClientCount ÓÃ»§Êı
      */
     public void syncSend(String theMessage, Queue<String> theClientMap, int theClientCount) {
         this.theType = 2;
@@ -107,11 +107,11 @@ public class Message implements Serializable {
     }
 
     /**
-     * @return Objectå…·ä½“ä¿¡æ¯
+     * @return Object¾ßÌåĞÅÏ¢
      */
     @Override
     public String toString() {
-        String a = "Objectå†…å®¹å¦‚ä¸‹: \ntheType : " + getTheType() +
+        String a = "ObjectÄÚÈİÈçÏÂ: \ntheType : " + getTheType() +
                 "\ntheMessage : " + getTheMessage() +
                 "\ntheFromUser : " + getTheFromUser() +
                 "\ntheToUser : " + getTheToUser() +

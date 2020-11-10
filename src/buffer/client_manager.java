@@ -3,6 +3,7 @@ package buffer;
 import operation.Message;
 import operation.clientStreamSave;
 
+import java.awt.*;
 import java.io.*;
 import java.net.Socket;
 import java.util.HashMap;
@@ -133,12 +134,12 @@ public class client_manager {
     void NameErr(Socket connection,ObjectOutputStream out){
         //名字错误处理
         try {
-            synchronized (this){
             notice.p2pSend("GM",null,"\t\t名字已经被占用了！！！\n");
             out.writeObject(notice);
             out.flush();
-            }
-        } catch (IOException e) {
+            Thread.sleep(10);
+
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

@@ -12,7 +12,7 @@ public class ServerMain {
             while (true) {
                 Socket connection = server.accept();
                 if(!manager.creat_client(connection)){
-                    System.err.println("连接失败");
+                    System.err.println("客户端连接失败");
                     connection.close();
                 }
             }

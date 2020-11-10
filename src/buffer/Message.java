@@ -1,19 +1,17 @@
-package operation;
+package buffer;
 
 import java.io.Serializable;
-import java.net.Socket;
-import java.util.HashMap;
 import java.util.Queue;
 
 public class Message implements Serializable {
-    private int theType;//ÏûÏ¢ÀàĞÍ: 0Èº·¢ 1Ë½ÁÄ 2Í¬²½
+    private int theType;//ï¿½ï¿½Ï¢ï¿½ï¿½ï¿½ï¿½: 0Èºï¿½ï¿½ 1Ë½ï¿½ï¿½ 2Í¬ï¿½ï¿½
 
-    private String theFromUser; //ÏûÏ¢´ÓÄÄÀïÀ´
-    private String theToUser;  //ÏûÏ¢µ½ÄÄÀïÈ¥
-    private String theMessage;//ÏûÏ¢±¾Ìå
+    private String theFromUser; //ï¿½ï¿½Ï¢ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    private String theToUser;  //ï¿½ï¿½Ï¢ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È¥
+    private String theMessage;//ï¿½ï¿½Ï¢ï¿½ï¿½ï¿½ï¿½
 
-    private Queue<String>  theClientMap;//Í¬²½¸ø¿Í»§¶ËÓÃµÄ
-    private int theClientCount;                 //¿Í»§¶ËÊıÁ¿
+    private Queue<String>  theClientMap;//Í¬ï¿½ï¿½ï¿½ï¿½ï¿½Í»ï¿½ï¿½ï¿½ï¿½Ãµï¿½
+    private int theClientCount;                 //ï¿½Í»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 
     public Message() {
         this.theType = -1;
@@ -25,14 +23,14 @@ public class Message implements Serializable {
     }
 
     /**
-     * @return ÏûÏ¢ÀàĞÍ: 0Èº·¢ 1Ë½ÁÄ 3Í¬²½
+     * @return ï¿½ï¿½Ï¢ï¿½ï¿½ï¿½ï¿½: 0Èºï¿½ï¿½ 1Ë½ï¿½ï¿½ 3Í¬ï¿½ï¿½
      */
     public int getTheType() {
         return theType;
     }
 
     /**
-     * @return fromUserÓÃ»§Ãû
+     * @return fromUserï¿½Ã»ï¿½ï¿½ï¿½
      */
     public String getTheFromUser() {
         return theFromUser;
@@ -43,28 +41,28 @@ public class Message implements Serializable {
     }
 
     /**
-     * @return Ëù·¢ÏûÏ¢
+     * @return ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢
      */
     public String getTheMessage() {
         return theMessage;
     }
 
     /**
-     * @return ·şÎñÆ÷µÄÓÃ»§ÁĞ±í
+     * @return ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ã»ï¿½ï¿½Ğ±ï¿½
      */
     public Queue<String> getTheClientMap() {
         return theClientMap;
     }
 
     /**
-     * @return ·şÎñÆ÷ÓÃ»§Êı
+     * @return ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ã»ï¿½ï¿½ï¿½
      */
     public int getTheClientCount() {
         return theClientCount;
     }
 
     /**
-     * @param theMessage Èº·¢ÏûÏ¢ÄÚÈİ
+     * @param theMessage Èºï¿½ï¿½ï¿½ï¿½Ï¢ï¿½ï¿½ï¿½ï¿½
      */
     public void groupSend(String theMessage, String theFromUser) {
         this.theType = 0;
@@ -77,9 +75,9 @@ public class Message implements Serializable {
     }
 
     /**
-     * @param theMessage  P2PÏûÏ¢ÄÚÈİ
-     * @param theFromUser ·¢ËÍ·½
-     * @param theToUser   ½ÓÊÕ·½
+     * @param theMessage  P2Pï¿½ï¿½Ï¢ï¿½ï¿½ï¿½ï¿½
+     * @param theFromUser ï¿½ï¿½ï¿½Í·ï¿½
+     * @param theToUser   ï¿½ï¿½ï¿½Õ·ï¿½
      */
     public void p2pSend(String theFromUser, String theToUser, String theMessage) {
         this.theType = 1;
@@ -92,9 +90,9 @@ public class Message implements Serializable {
     }
 
     /**
-     * @param theMessage     Í¬²½ÏûÏ¢ÄÚÈİ
-     * @param theClientMap   ÓÃ»§±í
-     * @param theClientCount ÓÃ»§Êı
+     * @param theMessage     Í¬ï¿½ï¿½ï¿½ï¿½Ï¢ï¿½ï¿½ï¿½ï¿½
+     * @param theClientMap   ï¿½Ã»ï¿½ï¿½ï¿½
+     * @param theClientCount ï¿½Ã»ï¿½ï¿½ï¿½
      */
     public void syncSend(String theMessage, Queue<String> theClientMap, int theClientCount) {
         this.theType = 2;
@@ -107,11 +105,11 @@ public class Message implements Serializable {
     }
 
     /**
-     * @return Object¾ßÌåĞÅÏ¢
+     * @return Objectï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢
      */
     @Override
     public String toString() {
-        String a = "ObjectÄÚÈİÈçÏÂ: \ntheType : " + getTheType() +
+        String a = "Objectï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½: \ntheType : " + getTheType() +
                 "\ntheMessage : " + getTheMessage() +
                 "\ntheFromUser : " + getTheFromUser() +
                 "\ntheToUser : " + getTheToUser() +

@@ -2,11 +2,7 @@ package buffer;
 
 import operation.Message;
 import operation.clientStreamSave;
-
-import java.io.DataInputStream;
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -28,17 +24,35 @@ public class client_process implements Runnable {
     public void run() {
         while (true){
             try {
+                //读取客户端序列化后的对象
                 Message message = (Message)streamSave.getOis().readObject();
+
                 if(message.getTheType()==0){
                     //群聊
+
+                    //加工消息
                     String finalMessage = process_message(message.getTheMessage(), message.getTheType());
+
+                    //message设置群聊方式
                     message.groupSend(finalMessage,message.getTheFromUser());
-                    MyBoss.send_message_group(message);//通知BOSS群发
+
+                    //通知BOSS群发
+                    if(!MyBoss.send_message_group(message))
+                        System.err.println("用户 "+Name+"的群发消息发送失败");
+
                 }else if(message.getTheType()==1){
                     //私发
+
+                    //加工一下消息
                     String finalMessage = process_message(message.getTheMessage(), message.getTheType());
+
+                    //设置好message准备发送
                     message.p2pSend(message.getTheFromUser(),message.getTheToUser(),finalMessage);
-                    MyBoss.send_message_user(message); //通知BOSS私发
+
+                    //通知BOSS私发
+                    if(!MyBoss.send_message_user(message))
+                        System.err.println("用户 "+Name+" 私发给 "+message.getTheToUser()+ "的消息发送失败");
+
                 }
 
             } catch (IOException e) {
@@ -55,6 +69,7 @@ public class client_process implements Runnable {
         }
 
     }
+
 
     String process_message(String message,int type) {
         //给信息拼接上发送人名字和时间,再作发送

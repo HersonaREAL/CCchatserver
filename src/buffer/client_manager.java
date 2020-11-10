@@ -3,7 +3,6 @@ package buffer;
 import operation.Message;
 import operation.clientStreamSave;
 
-import java.awt.*;
 import java.io.*;
 import java.net.Socket;
 import java.util.HashMap;
@@ -15,10 +14,10 @@ import java.util.concurrent.Executors;
 public class client_manager {
     private int client_count =0;
     private  final static int Thread_count=1000;
-    private HashMap<String, Socket> client_map = new HashMap<>();//存用户信息的哈希表
-    private HashMap<String, clientStreamSave>io_map=new HashMap<>();//存储用户Io流
-    private Queue<String> name_map=new LinkedList<>();
-    private Message notice = new Message();//通知
+    private final HashMap<String, Socket> client_map = new HashMap<>();//存用户信息的哈希表
+    private final HashMap<String, clientStreamSave>io_map=new HashMap<>();//存储用户Io流
+    private final Queue<String> name_map=new LinkedList<>();
+    private final Message notice = new Message();//通知
     ExecutorService pool = Executors.newFixedThreadPool(Thread_count); //线程池
 
     public boolean creat_client(Socket connection){
@@ -32,7 +31,7 @@ public class client_manager {
             String getName = ois.readUTF();
 
             if(client_map.get(getName)!=null||getName.equals("GM")){
-                NameErr(connection,oos);//重名直接踢了
+                NameErr(oos);//重名直接踢了
                 return false;
             }
 
@@ -107,12 +106,17 @@ public class client_manager {
     }
 
     boolean send_message_user(Message theMessage){
-        //获取接受用户的流
-        ObjectOutputStream sendStream = io_map.get(theMessage.getTheToUser()).getOos();
+        //获取接受用户和发送用户的流
+        ObjectOutputStream ToUserStream = io_map.get(theMessage.getTheToUser()).getOos();
+        ObjectOutputStream FromUserStream=io_map.get(theMessage.getTheFromUser()).getOos();
+
         try {
             synchronized (this){
-            sendStream.writeObject(theMessage);
-            sendStream.flush();
+                //给发送客户和接受客户各发一条信息
+            ToUserStream.writeObject(theMessage);
+            ToUserStream.flush();
+            FromUserStream.writeObject(theMessage);
+            FromUserStream.flush();
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -131,10 +135,10 @@ public class client_manager {
         return send_message_group(notice);
     }
 
-    void NameErr(Socket connection,ObjectOutputStream out){
+    void NameErr(ObjectOutputStream out){
         //名字错误处理
         try {
-            notice.p2pSend("GM",null,"\t\t名字已经被占用了！！！\n");
+            notice.p2pSend("GM",null,"\t\tGM:名字已经被占用了！！！\n");
             out.writeObject(notice);
             out.flush();
             Thread.sleep(10);

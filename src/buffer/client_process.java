@@ -42,12 +42,15 @@ public class client_process implements Runnable {
                 }
 
             } catch (IOException e) {
-                e.printStackTrace();
+                //e.printStackTrace();
+                System.err.println(Name+" 已丢失连接 ");
                 MyBoss.del_client(Name);
+                return;
             } catch (ClassNotFoundException e) {
-                e.printStackTrace();
-                System.err.println("流中获取对象失败");
+                //e.printStackTrace();
+                System.err.println("流中获取对象失败,已丢失连接 名字"+Name);
                 MyBoss.del_client(Name);
+                return;
             }
         }
 

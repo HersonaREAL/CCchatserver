@@ -6,6 +6,8 @@ import operation.clientStreamSave;
 import java.io.*;
 import java.net.Socket;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.Queue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -14,6 +16,7 @@ public class client_manager {
     private  final static int Thread_count=1000;
     private HashMap<String, Socket> client_map = new HashMap<>();//存用户信息的哈希表
     private HashMap<String, clientStreamSave>io_map=new HashMap<>();//存储用户Io流
+    private Queue<String> name_map=new LinkedList<>();
     private Message notice = new Message();//通知
     ExecutorService pool = Executors.newFixedThreadPool(Thread_count); //线程池
 
@@ -22,21 +25,22 @@ public class client_manager {
             return false;
 
         try {
-            //刚开始连接读取名字
-            DataInputStream in =new DataInputStream(connection.getInputStream());
-            String getName=in.readUTF();
-            in.close();
+            //刚开始连接创建流并读取名字
+            ObjectInputStream ois=new ObjectInputStream(connection.getInputStream());
+            ObjectOutputStream oos= new ObjectOutputStream(connection.getOutputStream());
+            String getName = ois.readUTF();
 
             if(client_map.get(getName)!=null||getName.equals("GM")){
-                NameErr(connection);//重名直接踢了
+                NameErr(connection,oos);//重名直接踢了
                 return false;
             }
 
 
             //名字和套接字加入哈希表，客户数量+1,需要上锁，防止读写不一致
             synchronized (this){
+                name_map.offer(getName);
                 client_map.put(getName,connection);
-                io_map.put(getName,new clientStreamSave(new ObjectInputStream(connection.getInputStream()),new ObjectOutputStream(connection.getOutputStream())));
+                io_map.put(getName,new clientStreamSave(ois,oos));
                 client_count++;
             }
 
@@ -46,7 +50,7 @@ public class client_manager {
 
             //通知所有客户端有人加入
             String noticeMessage="\t\t有位👴加入群聊 名字:"+getName+"\n";
-            System.out.println("用户 "+getName+" 已加入,套接字"+connection.getInetAddress()+":"+connection.getPort());
+            System.out.println("用户 "+getName+" 已加入,套接字"+connection);
             sys_for_client(noticeMessage);
 
         } catch (IOException e) {
@@ -63,12 +67,13 @@ public class client_manager {
         String exit_notice="\t\t有位👴退出群聊 名字:"+Name+"\n";
         synchronized (this){
             //从哈希表中去除
+            name_map.remove(Name);
             client_map.remove(Name);
             io_map.remove(Name);
             client_count--;
         }
 
-        System.out.println("用户 "+Name+" 已退出,套接字"+exit_socket.getInetAddress()+":"+exit_socket.getPort());
+        System.out.println("用户 "+Name+" 已退出,套接字"+exit_socket);
 
         exit_socket.close();//关闭套接字释放资源
 
@@ -77,6 +82,7 @@ public class client_manager {
 
         } catch (IOException e) {
             e.printStackTrace();
+            System.err.println("删除客户端错误!");
         }
     }
 
@@ -119,15 +125,14 @@ public class client_manager {
         //同步参数给客户端
         synchronized (this){
             //设置同步消息类
-        notice.syncSend(theMessage,client_map,client_count);
+        notice.syncSend(theMessage,name_map,client_count);
         }
         return send_message_group(notice);
     }
 
-    void NameErr(Socket connection){
+    void NameErr(Socket connection,ObjectOutputStream out){
         //名字错误处理
         try {
-            ObjectOutputStream out=new ObjectOutputStream(connection.getOutputStream());
             synchronized (this){
             notice.p2pSend("GM",null,"\t\t名字已经被占用了！！！\n");
             out.writeObject(notice);

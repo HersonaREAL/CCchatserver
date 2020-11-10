@@ -1,3 +1,5 @@
+import operation.Message;
+
 import java.io.*;
 import java.net.Socket;
 import java.util.Scanner;
@@ -7,27 +9,23 @@ public class test_client {
         String hostname = args.length>0?args[0]:"localhost";
         Socket socket = null;
         try {
-            while(true){
             socket = new Socket(hostname,23333);
-            //socket.setSoTimeout(15000);
 
-           // Writer out = new OutputStreamWriter(socket.getOutputStream(),"utf-8");
-            DataOutputStream out = new DataOutputStream(socket.getOutputStream());
-            out.writeUTF("👴傲天");
-            out.flush();
+            ObjectOutputStream c = new ObjectOutputStream(socket.getOutputStream());
+            ObjectInputStream a =new ObjectInputStream(socket.getInputStream());
+            c.writeUTF("傲天");
+            c.flush();
+            Message k = new Message();
+            k.groupSend("TEST","傲天");
+            for(int i=0;i<10;i++){
+                c.writeObject(k);
             }
-            //out.close();
-//            int i=0;
-//            while (i<1000){
-//                out.writeUTF("测试聊天"+i);
-//                out.flush();
-//                i++;
-//            }
-//            DataInputStream in =new DataInputStream(socket.getInputStream());
-//            while(true){
-//                String message = in.readUTF();
-//                System.out.print(message);
-//            }
+
+            while (true){
+                Message b = (Message) a.readObject();
+                System.out.println(b.getTheMessage());
+            }
+
         } catch (Exception e) {
             e.printStackTrace();
         }finally {

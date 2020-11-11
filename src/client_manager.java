@@ -1,8 +1,3 @@
-package operation;
-
-import buffer.Message;
-import buffer.clientStreamSave;
-
 import java.io.*;
 import java.net.Socket;
 import java.util.HashMap;
@@ -16,8 +11,7 @@ public class client_manager {
     private  final static int Thread_count=1000;
     private final HashMap<String, Socket> client_map = new HashMap<>();//存用户信息的哈希表
     private final HashMap<String, clientStreamSave>io_map=new HashMap<>();//存储用户Io流
-    private final Queue<String> name_map=new LinkedList<>();
-    private final Message notice = new Message();//通知
+    private final Queue<String> name_map=new LinkedList<>();//用户名字队列
     ExecutorService pool = Executors.newFixedThreadPool(Thread_count); //线程池
 
     public boolean creat_client(Socket connection){
@@ -128,16 +122,19 @@ public class client_manager {
 
     boolean sys_for_client(String theMessage){
         //同步参数给客户端
-        synchronized (this){
-            //设置同步消息类
+
+        //设置同步消息类
+        Message notice =new Message();
         notice.syncSend(theMessage,name_map,client_count);
-        }
+
+        //群发通知
         return send_message_group(notice);
     }
 
     void NameErr(ObjectOutputStream out){
         //名字错误处理
         try {
+            Message notice =new Message();
             notice.p2pSend("GM",null,"\t\tGM:名字已经被占用了！！！\n");
             out.writeObject(notice);
             out.flush();

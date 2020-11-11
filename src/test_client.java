@@ -1,4 +1,3 @@
-import buffer.Message;
 
 import java.io.*;
 import java.net.Socket;
@@ -19,6 +18,12 @@ public class test_client {
             k.groupSend("TEST","傲天");
             for(int i=0;i<10;i++){
                 c.writeObject(k);
+                c.flush();
+            }
+            Message f=new Message();
+            f.groupSend("SADKJFHSAKJLFDSHJK","傲天");
+            for(int i=0;i<10;i++){
+                c.writeObject(f);
                 c.flush();
             }
 

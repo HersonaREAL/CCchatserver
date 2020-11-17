@@ -5,7 +5,19 @@ import java.net.Socket;
 public class test_client {
     public static void main(String[] args) {
         String hostname = args.length>0?args[0]:"localhost";
-        Socket socket = null;
+        Socket socket=null;
+        int i=0;
+        while(true){
+            try {
+                Socket a=new Socket(hostname,23333);
+                ObjectOutputStream out=new ObjectOutputStream(a.getOutputStream());
+                out.writeUTF(String.valueOf(i++));
+                out.flush();
+            } catch (IOException ioException) {
+                ioException.printStackTrace();
+            }
+        }
+/*        Socket socket = null;
         try {
             socket = new Socket(hostname,23333);
 
@@ -30,19 +42,9 @@ public class test_client {
             while (true){
                 Message b = (Message) a.readObject();
                 System.out.println(b.getTheMessage());
-            }
+            }*/
 
-        } catch (Exception e) {
-            System.err.println("EEEEEE");
-            e.printStackTrace();
-        }finally {
-            if(socket!=null){
-                try {
-                    socket.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
         }
-    }
+
+
 }

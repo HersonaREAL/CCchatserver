@@ -47,7 +47,7 @@ public class client_manager {
             pool.submit(task);
 
             //通知所有客户端有人加入
-            String noticeMessage="\t\tGM:有位👴加入群聊 名字:"+getName+"\n";
+            String noticeMessage="\t\tG★M:有位👴加入群聊 名字:"+getName+"\n";
             System.out.println("用户 "+getName+" 已加入,套接字"+connection);
             sys_for_client(noticeMessage);
 
@@ -62,7 +62,7 @@ public class client_manager {
     void del_client(String Name){
         try {
         Socket exit_socket = client_map.get(Name);
-        String exit_notice="\t\tGM:有位👴退出群聊 名字:"+Name+"\n";
+        String exit_notice="\t\tG★M:有位👴退出群聊 名字:"+Name+"\n";
         synchronized (this){
             //从哈希表中去除
             name_map.remove(Name);
@@ -145,7 +145,7 @@ public class client_manager {
         //名字错误处理
         try {
             Message notice =new Message();
-            notice.p2pSend("GM",null,"\t\tGM:名字已经被占用了！！！\n\t\t你已被踢下线\n");
+            notice.p2pSend("GM",null,"\t\tG★M:名字已经被占用了！！！\n\t\t你已被踢下线\n");
             out.writeObject(notice);
             out.flush();
             //Thread.sleep(10);

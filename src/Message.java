@@ -1,15 +1,18 @@
 import java.io.Serializable;
+import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.Queue;
 
-public class Message implements Serializable {
-    private int theType;//ÏûÏ¢ÀàĞÍ: 0Èº·¢ 1Ë½ÁÄ 2Í¬²½
+public class Message implements Serializable,Cloneable {
+    private int theType;//æ¶ˆæ¯ç±»å‹: 0ç¾¤å‘ 1ç§èŠ 2åŒæ­¥
 
-    private String theFromUser; //ÏûÏ¢´ÓÄÄÀïÀ´
-    private String theToUser;  //ÏûÏ¢µ½ÄÄÀïÈ¥
-    private String theMessage;//ÏûÏ¢±¾Ìå
+    private String theFromUser; //æ¶ˆæ¯ä»å“ªé‡Œæ¥
+    private String theToUser;  //æ¶ˆæ¯åˆ°å“ªé‡Œå»
+    private String theMessage;//æ¶ˆæ¯æœ¬ä½“
 
-    private Queue<String> theClientMap;//Í¬²½¸ø¿Í»§¶ËÓÃµÄ
-    private int theClientCount;                 //¿Í»§¶ËÊıÁ¿
+
+    private Queue<String> theClientMap;//åŒæ­¥ç»™å®¢æˆ·ç«¯ç”¨çš„
+    private int theClientCount;                 //å®¢æˆ·ç«¯æ•°é‡
 
     public Message() {
         this.theType = -1;
@@ -20,15 +23,27 @@ public class Message implements Serializable {
         this.theClientCount = -1;
     }
 
+    @Override
+    public Message clone() throws CloneNotSupportedException {
+        Message tmp = (Message) super.clone();
+        Queue<String> temp=new LinkedList<>();
+        temp.addAll(theClientMap);
+        tmp.setTheClientMap(temp);
+        return tmp;
+    }
+    public void setTheClientMap(Queue<String> theClientMap) {
+        this.theClientMap = theClientMap;
+    }
+
     /**
-     * @return ÏûÏ¢ÀàĞÍ: 0Èº·¢ 1Ë½ÁÄ 3Í¬²½
+     * @return æ¶ˆæ¯ç±»å‹: 0ç¾¤å‘ 1ç§èŠ 3åŒæ­¥
      */
     public int getTheType() {
         return theType;
     }
 
     /**
-     * @return fromUserÓÃ»§Ãû
+     * @return fromUserç”¨æˆ·å
      */
     public String getTheFromUser() {
         return theFromUser;
@@ -39,28 +54,28 @@ public class Message implements Serializable {
     }
 
     /**
-     * @return Ëù·¢ÏûÏ¢
+     * @return æ‰€å‘æ¶ˆæ¯
      */
     public String getTheMessage() {
         return theMessage;
     }
 
     /**
-     * @return ·şÎñÆ÷µÄÓÃ»§ÁĞ±í
+     * @return æœåŠ¡å™¨çš„ç”¨æˆ·åˆ—è¡¨
      */
     public Queue<String> getTheClientMap() {
         return theClientMap;
     }
 
     /**
-     * @return ·şÎñÆ÷ÓÃ»§Êı
+     * @return æœåŠ¡å™¨ç”¨æˆ·æ•°
      */
     public int getTheClientCount() {
         return theClientCount;
     }
 
     /**
-     * @param theMessage Èº·¢ÏûÏ¢ÄÚÈİ
+     * @param theMessage ç¾¤å‘æ¶ˆæ¯å†…å®¹
      */
     public void groupSend(String theMessage, String theFromUser) {
         this.theType = 0;
@@ -73,9 +88,9 @@ public class Message implements Serializable {
     }
 
     /**
-     * @param theMessage  P2PÏûÏ¢ÄÚÈİ
-     * @param theFromUser ·¢ËÍ·½
-     * @param theToUser   ½ÓÊÕ·½
+     * @param theMessage  P2Pæ¶ˆæ¯å†…å®¹
+     * @param theFromUser å‘é€æ–¹
+     * @param theToUser   æ¥æ”¶æ–¹
      */
     public void p2pSend(String theFromUser, String theToUser, String theMessage) {
         this.theType = 1;
@@ -88,9 +103,9 @@ public class Message implements Serializable {
     }
 
     /**
-     * @param theMessage     Í¬²½ÏûÏ¢ÄÚÈİ
-     * @param theClientMap   ÓÃ»§±í
-     * @param theClientCount ÓÃ»§Êı
+     * @param theMessage     åŒæ­¥æ¶ˆæ¯å†…å®¹
+     * @param theClientMap   ç”¨æˆ·è¡¨
+     * @param theClientCount ç”¨æˆ·æ•°
      */
     public void syncSend(String theMessage, Queue<String> theClientMap, int theClientCount) {
         this.theType = 2;
@@ -103,15 +118,16 @@ public class Message implements Serializable {
     }
 
     /**
-     * @return Object¾ßÌåĞÅÏ¢
+     * @return Objectå…·ä½“ä¿¡æ¯
      */
     @Override
     public String toString() {
-        String a = "ObjectÄÚÈİÈçÏÂ: \ntheType : " + getTheType() +
+        String a = "Objectå†…å®¹å¦‚ä¸‹: \ntheType : " + getTheType() +
                 "\ntheMessage : " + getTheMessage() +
                 "\ntheFromUser : " + getTheFromUser() +
                 "\ntheToUser : " + getTheToUser() +
-                "\ntheNumberOfClient : " + getTheClientCount();
+                "\ntheNumberOfClient : " + getTheClientCount()+
+                "\ntheQueue : "+ Arrays.toString(theClientMap.toArray());
         if (getTheClientMap() != null)
             a.concat("\nHashMap:\n" + getTheClientMap().toString());
         return a;

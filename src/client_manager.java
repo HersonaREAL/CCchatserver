@@ -14,7 +14,11 @@ public class client_manager {
     private final Queue<String> name_map=new LinkedList<>();//用户名字队列
     ExecutorService pool = Executors.newFixedThreadPool(Thread_count); //线程池
 
-    public boolean creat_client(Socket connection){
+    client_manager(){
+        name_map.offer("GroupSend");
+    }
+
+    public boolean create_client(Socket connection){
         if(client_count>=1000) //最多支持1000人聊天
             return false;
 
@@ -24,7 +28,7 @@ public class client_manager {
             ObjectOutputStream oos= new ObjectOutputStream(connection.getOutputStream());
             String getName = ois.readUTF();
 
-            if(client_map.get(getName)!=null||getName.equals("GM")){
+            if(client_map.get(getName)!=null||getName.equals("GM")||getName.equals("GroupSend")){
                 NameErr(oos);//重名直接踢了
                 return false;
             }
@@ -43,7 +47,7 @@ public class client_manager {
             pool.submit(task);
 
             //通知所有客户端有人加入
-            String noticeMessage="\t\t有位👴加入群聊 名字:"+getName+"\n";
+            String noticeMessage="\t\tGM:有位👴加入群聊 名字:"+getName+"\n";
             System.out.println("用户 "+getName+" 已加入,套接字"+connection);
             sys_for_client(noticeMessage);
 
@@ -58,7 +62,7 @@ public class client_manager {
     void del_client(String Name){
         try {
         Socket exit_socket = client_map.get(Name);
-        String exit_notice="\t\t有位👴退出群聊 名字:"+Name+"\n";
+        String exit_notice="\t\tGM:有位👴退出群聊 名字:"+Name+"\n";
         synchronized (this){
             //从哈希表中去除
             name_map.remove(Name);
@@ -91,7 +95,7 @@ public class client_manager {
                     sendStream.writeObject(theMessage);
                     sendStream.flush();
                 }
-            } catch (IOException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
                 return false;
             }
@@ -122,23 +126,29 @@ public class client_manager {
 
     boolean sys_for_client(String theMessage){
         //同步参数给客户端
-
+        Message temp=null;
+        try{
         //设置同步消息类
         Message notice =new Message();
         notice.syncSend(theMessage,name_map,client_count);
+        temp = notice.clone();
+        }catch (Exception e){
+            e.printStackTrace();
+            return false;
+        }
 
         //群发通知
-        return send_message_group(notice);
+        return send_message_group(temp);
     }
 
     void NameErr(ObjectOutputStream out){
         //名字错误处理
         try {
             Message notice =new Message();
-            notice.p2pSend("GM",null,"\t\tGM:名字已经被占用了！！！\n");
+            notice.p2pSend("GM",null,"\t\tGM:名字已经被占用了！！！\n\t\t你已被踢下线\n");
             out.writeObject(notice);
             out.flush();
-            Thread.sleep(10);
+            //Thread.sleep(10);
 
         } catch (Exception e) {
             e.printStackTrace();

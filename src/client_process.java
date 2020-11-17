@@ -47,7 +47,7 @@ public class client_process implements Runnable {
 
     void Group_Send(Message message){
         //加工一下消息
-        String finalMessage = process_message(message.getTheMessage(), message.getTheType());
+        String finalMessage = process_message(message.getTheMessage(), message.getTheType(),null);
 
         //设置好sendMessage准备发送
         Message sendMessage=new Message();
@@ -60,7 +60,7 @@ public class client_process implements Runnable {
 
     void Private_Send(Message message){
         //加工一下消息
-        String finalMessage = process_message(message.getTheMessage(), message.getTheType());
+        String finalMessage = process_message(message.getTheMessage(), message.getTheType(),message.getTheToUser());
 
         //设置好snedMessage准备发送
         Message sendMessage=new Message();
@@ -70,16 +70,16 @@ public class client_process implements Runnable {
         if(!MyBoss.send_message_user(sendMessage))
             System.err.println("用户 "+Name+" 私发给 "+message.getTheToUser()+ "的消息发送失败");
     }
-    String process_message(String message,int type) {
+    String process_message(String message,int type,String toUser) {
         //给信息拼接上发送人名字和时间,再作发送
         Date t = new Date();
-        SimpleDateFormat df = new SimpleDateFormat(" (yyyy-MM-dd HH:mm:ss)\n○ ");
+        SimpleDateFormat df = new SimpleDateFormat(" (yyyy-MM-dd HH:mm:ss) ");
         if (type==0)
             //群聊处理
-            return Name+df.format(t)+message+"\n"; //按格式拼接名字和时间
+            return Name+df.format(t)+"\n★ "+message+"\n"; //按格式拼接名字和时间
         else
             //私聊处理
-            return Name+df.format(t)+"(私聊) "+message+"\n";
+            return Name+df.format(t)+"("+"私聊给 " +toUser+")\n💢 "+message+"\n";
     }
 
 }

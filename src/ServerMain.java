@@ -11,7 +11,7 @@ public class ServerMain {
         try(ServerSocket server = new ServerSocket(PORT)){
             while (true) {
                 Socket connection = server.accept();
-                if(!manager.creat_client(connection)){
+                if(!manager.create_client(connection)){
                     System.err.println("客户端连接失败");
                     connection.close();
                 }

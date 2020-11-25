@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="QQserver:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/QQserver_jar</output-path>
+    <root id="archive" name="QQserver.jar">
+      <element id="module-output" name="QQserver" />
+    </root>
+  </artifact>
+</component>

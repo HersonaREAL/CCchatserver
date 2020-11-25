@@ -51,7 +51,7 @@ public class client_process implements Runnable {
 
         //设置好sendMessage准备发送
         Message sendMessage=new Message();
-        sendMessage.groupSend(message.getTheFromUser(),finalMessage);
+        sendMessage.groupSend(finalMessage,message.getTheFromUser());
 
         //通知BOSS群发
         if(!MyBoss.send_message_group(sendMessage))
